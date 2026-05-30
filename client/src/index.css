@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-block px-8 py-3 rounded-full text-white font-bold uppercase text-sm tracking-wider transition-all duration-200 cursor-pointer;
+  }
+  .btn-green {
+    @apply bg-gradient-green hover:shadow-lg hover:-translate-y-0.5;
+  }
+  .btn-white {
+    @apply bg-white text-grey-dark hover:shadow-lg hover:-translate-y-0.5;
+  }
+  .btn-small {
+    @apply px-5 py-2 text-xs;
+  }
+}

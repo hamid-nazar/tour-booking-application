@@ -1,6 +1,6 @@
 # Natours — Tour Booking Application
 
-A full-stack tour booking web application built with Node.js, Express, MongoDB, and Pug. Users can browse tours, make bookings via Stripe, leave reviews, and manage their accounts.
+A full-stack tour booking web application built with Node.js, Express, MongoDB, and React. Users can browse tours, make bookings via Stripe, leave reviews, and manage their accounts.
 
 ## Features
 
@@ -9,7 +9,7 @@ A full-stack tour booking web application built with Node.js, Express, MongoDB, 
 - **Bookings** — Stripe Checkout integration with webhook support for payment confirmation
 - **Reviews** — Users can review tours with ratings; average ratings are computed automatically
 - **User Accounts** — Profile photo upload, password update, account deactivation
-- **Server-Side Rendering** — Pug templates for overview, tour detail, login, and account pages
+- **React SPA** — Vite + React + Tailwind CSS frontend with client-side routing
 - **Email** — Transactional emails (welcome, password reset) using Nodemailer with SendGrid in production
 - **Security** — Rate limiting, data sanitization (NoSQL injection & XSS), HTTP parameter pollution protection, Helmet headers, JWT authentication via cookies
 
@@ -20,11 +20,12 @@ A full-stack tour booking web application built with Node.js, Express, MongoDB, 
 | Runtime     | Node.js                                 |
 | Framework   | Express                                 |
 | Database    | MongoDB (Mongoose ODM)                  |
-| Templating  | Pug                                     |
+| Frontend    | React + React Router                    |
+| Styling     | Tailwind CSS                            |
+| Bundler     | Vite                                    |
 | Payments    | Stripe                                  |
 | File Upload | Multer + Sharp                          |
 | Email       | Nodemailer (SendGrid / Mailtrap)        |
-| Bundler     | Parcel                                  |
 | Auth        | JWT (JSON Web Tokens) + bcrypt          |
 
 ## Project Structure
@@ -38,8 +39,19 @@ src/
 ├── routes/               # Express routers
 ├── middleware/           # Custom middleware (alias queries, etc.)
 ├── utils/                # Helpers (API features, error classes, email, async wrapper)
-├── views/                # Pug templates (pages + email templates)
-└── public/               # Static assets (CSS, JS bundles, images)
+├── views/                # Pug templates (email templates)
+└── public/               # Static assets (images)
+client/
+├── index.html            # Vite entry HTML
+├── vite.config.js        # Vite config with API proxy
+├── tailwind.config.js    # Tailwind theme (green palette, Lato font)
+└── src/
+    ├── main.jsx          # React entry point
+    ├── App.jsx           # Routes & layout
+    ├── components/       # Header, Footer, TourCard, ReviewCard, Map, Alert
+    ├── pages/            # Overview, Tour, Login, Account, MyTours
+    ├── context/          # AuthContext (user state, login/logout)
+    └── utils/            # API helper (fetch wrapper)
 ```
 
 ## Getting Started
@@ -56,6 +68,7 @@ src/
 git clone <repository-url>
 cd tours
 npm install
+npm run client:install
 ```
 
 ### Environment Variables
@@ -85,20 +98,29 @@ STRIPE_SECRET_KEY=<your-stripe-secret-key>
 STRIPE_WEBHOOK_SECRET=<your-stripe-webhook-secret>
 ```
 
+Create a `client/.env` file for the frontend:
+
+```env
+VITE_MAPBOX_TOKEN=<your-mapbox-public-token>
+VITE_STRIPE_PUBLIC_KEY=<your-stripe-publishable-key>
+```
+
 ### Running the App
 
 ```bash
-# Development
+# Development (API + React dev server with HMR)
+npm run dev
+
+# API server only
 npm run start:dev
 
 # Production
+npm run client:build
 npm run start:prod
-
-# Build client-side JS bundle
-npm run build:js
 ```
 
-The server starts on `http://localhost:8000` by default.
+In development, the React app runs on `http://localhost:3000` with API requests proxied to `http://localhost:8000`.  
+In production, the Express server serves the built React app from `client/dist/`.
 
 ## API Endpoints
 

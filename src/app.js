@@ -88,11 +88,17 @@ app.use("/api/users",userRouter);
 app.use("/api/reviews",reviewRouter);
 app.use("/api/bookings",booking);
 
-
-app.all("*",(req,res,next)=>{
-    
-    next(new appError(`Cannot find route:${req.originalUrl} on this server`,404));
-});
+// Serve React client in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  });
+} else {
+  app.all("*",(req,res,next)=>{
+      next(new appError(`Cannot find route:${req.originalUrl} on this server`,404));
+  });
+}
 
 app.use(globalErrorHandler);
 
